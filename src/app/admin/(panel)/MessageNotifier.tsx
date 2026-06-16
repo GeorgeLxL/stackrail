@@ -40,13 +40,19 @@ export function MessageNotifier() {
       fresh.forEach((m) => seen.current.add(m.id));
 
       if ("Notification" in window && Notification.permission === "granted") {
-        fresh.forEach((m) =>
-          new Notification("New contact message", {
+        fresh.forEach((m) => {
+          const note = new Notification("New contact message", {
             body: `${m.name}: ${m.message.slice(0, 120)}`,
             icon: "/favicon.ico",
             tag: m.id,
-          })
-        );
+          });
+          // Clicking the notification focuses THIS tab/window and opens Messages.
+          note.onclick = () => {
+            window.focus();
+            router.push("/admin/messages");
+            note.close();
+          };
+        });
       }
 
       // Refresh server components so the messages list / dashboard update live.
