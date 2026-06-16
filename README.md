@@ -13,7 +13,9 @@ Features:
 - Private admin panel at `/admin` with a single seeded user (custom
   cookie-session auth, not Supabase Auth). Sidebar with:
   - **Dashboard** — message/team counts + recent messages
-  - **Messages** — read & delete contact inquiries
+  - **Messages** — read & delete contact inquiries; the list updates **live**
+    and a **desktop notification** fires when a new message arrives (click
+    "Enable desktop notifications" in the sidebar once to allow them)
   - **Team** — add / delete team members
   - **Settings** — edit the public contact email & Telegram
 - The landing page shows an **About us / team** section automatically when one

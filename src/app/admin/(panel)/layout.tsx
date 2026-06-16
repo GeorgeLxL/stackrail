@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { verifySessionToken, SESSION_COOKIE } from "@/lib/session";
 import { logout } from "../actions";
 import { SidebarNav } from "./SidebarNav";
+import { MessageNotifier } from "./MessageNotifier";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,8 @@ export default async function PanelLayout({
         <p className="mt-0.5 mb-7 text-xs text-muted">Admin</p>
 
         <SidebarNav />
+
+        <MessageNotifier />
 
         <form action={logout} className="mt-8 md:mt-auto md:pt-8">
           <p className="mb-2 text-xs text-muted">
