@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Two token sets share one palette:
+   - --background / --foreground / --muted-foreground / --card  → used by the
+     ported landing design (inline styles via var(...)).
+   - --ink / --canvas / --surface / --muted / --line / --accent → RGB triplets
+     consumed by Tailwind utilities (admin panel, login, theme toggle).
+   Dark is the original/default look; .light is the alternate theme. */
+:root,
+.dark {
+  --background: #08080a;
+  --foreground: #f4f4f3;
+  --muted-foreground: #8f8f96;
+  --card: #0e0e11;
+
+  --canvas: 8 8 10;
+  --surface: 14 14 17;
+  --ink: 244 244 243;
+  --muted: 143 143 150;
+  --line: 244 244 243;
+  --accent: 201 168 76;
+  --header-bg: rgba(8, 8, 10, 0.95);
+  --watermark: rgba(201, 168, 76, 0.07);
+}
+
+.light {
+  --background: #faf9f7;
+  --foreground: #08080a;
+  --muted-foreground: #57575c;
+  --card: #ffffff;
+
+  --canvas: 250 249 247;
+  --surface: 255 255 255;
+  --ink: 8 8 10;
+  --muted: 87 87 92;
+  --line: 8 8 10;
+  --accent: 201 168 76;
+  --header-bg: rgba(250, 249, 247, 0.9);
+  --watermark: rgba(8, 8, 10, 0.05);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(201, 168, 76, 0.3);
+}
+
+/* react-phone-number-input — match the ported form's dark/gold inputs */
+.PhoneInput {
+  border: 1px solid rgba(201, 168, 76, 0.13);
+  padding: 0.875rem 1rem;
+  transition: border-color 0.15s;
+}
+.PhoneInput:focus-within {
+  border-color: rgba(201, 168, 76, 0.35);
+}
+.PhoneInputInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.9375rem;
+}
+.PhoneInputInput::placeholder {
+  color: var(--muted-foreground);
+}
+.PhoneInputCountrySelect {
+  color: #08080a;
+}
+.PhoneInputCountrySelectArrow {
+  color: var(--muted-foreground);
+  opacity: 0.8;
+}
+.PhoneInputCountryIcon--border {
+  box-shadow: none;
+  background: transparent;
+}
+.PhoneInput--focus .PhoneInputCountrySelectArrow,
+.PhoneInput--focus .PhoneInputCountryIcon--border {
+  box-shadow: none;
+}
