@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { ThemeToggle } from "./ThemeToggle";
+import type { ContactInfo, TeamMember } from "@/lib/types";
 
 /* ---- design constants (ported verbatim from the original) ---- */
 const m = "var(--font-serif), 'Playfair Display', Georgia, serif";
@@ -18,6 +19,13 @@ function scrollToId(id: string) {
 
 // Centered max-width wrapper. Sections own their horizontal padding.
 const WRAP = "mx-auto w-full max-w-[1200px]";
+
+// Build a Telegram URL from a handle ("@name"), username, or full URL.
+function tgHref(value: string) {
+  const v = value.trim();
+  if (/^https?:\/\//i.test(v)) return v;
+  return `https://t.me/${v.replace(/^@/, "")}`;
+}
 
 /* ---- Brand mark — stacked-rail monogram with gold gradient ---- */
 function BrandMark({ size, id }: { size: number; id: string }) {
@@ -52,13 +60,13 @@ function Logo({ size = "sm" }: { size?: "sm" | "lg" }) {
     >
       <BrandMark size={icon} id={`brand-${size}`} />
       <span
-        className={`font-mono font-semibold leading-none tracking-[0.22em] whitespace-nowrap ${
-          size === "lg" ? "text-[1.05rem]" : "text-[0.82rem]"
+        className={`font-mono font-semibold leading-none whitespace-nowrap ${
+          size === "lg" ? "text-[1.05rem] tracking-[0.18em]" : "text-[0.74rem] tracking-[0.12em]"
         }`}
       >
-        <span className="text-ink">STACK</span>
+        <span className="text-ink">STRANTA</span>
         <span className="text-accent transition-[text-shadow] duration-300 group-hover:[text-shadow:0_0_14px_rgba(201,168,76,0.55)]">
-          RAIL
+          DIGITAL
         </span>
       </span>
     </span>
@@ -167,13 +175,17 @@ const NAV: [string, string][] = [
   ["why", "Why"],
 ];
 
-function Header({ onContact }: { onContact: () => void }) {
+function Header({ onContact, hasTeam }: { onContact: () => void; hasTeam: boolean }) {
   const [n, o] = useState(false);
   useEffect(() => {
     const i = () => o(window.scrollY > 40);
     window.addEventListener("scroll", i);
     return () => window.removeEventListener("scroll", i);
   }, []);
+
+  const nav: [string, string][] = hasTeam
+    ? [...NAV.slice(0, 2), ["about", "About"], ...NAV.slice(2)]
+    : NAV;
 
   return (
     <header
@@ -193,14 +205,14 @@ function Header({ onContact }: { onContact: () => void }) {
         <div className={`${WRAP} flex h-16 items-center justify-between gap-4`}>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Stackrail — back to top"
+          aria-label="StrantaDigital — back to top"
           className="flex shrink-0 cursor-pointer items-center border-0 bg-transparent p-0"
         >
           <Logo size="sm" />
         </button>
 
         <nav className="hidden lg:flex" style={{ alignItems: "center", gap: "1.75rem" }}>
-          {NAV.map(([id, label]) => (
+          {nav.map(([id, label]) => (
             <button
               key={id}
               onClick={() => scrollToId(id)}
@@ -376,6 +388,32 @@ function Card({ id, title, desc }: { id: string; title: string; desc: string }) 
   );
 }
 
+/* ---- About us / Team (shown only when members exist) ---- */
+function AboutUs({ team }: { team: TeamMember[] }) {
+  if (!team.length) return null;
+  return (
+    <section id="about" className="px-5 py-16 md:px-12 md:py-28">
+      <div className={WRAP}>
+        <Label>— Our team</Label>
+        <h2 style={{ fontFamily: m, fontSize: "clamp(2rem, 4vw, 3.25rem)", fontWeight: 400, lineHeight: 1.2, color: "var(--foreground)", marginTop: "1.25rem", maxWidth: "640px" }}>
+          The people behind the work.
+        </h2>
+        <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {team.map((member) => (
+            <div key={member.id} style={{ borderTop: `1px solid ${g}`, paddingTop: "1.5rem" }}>
+              <div style={{ fontFamily: m, fontSize: "1.25rem", color: "var(--foreground)", lineHeight: 1.25 }}>{member.name}</div>
+              <div style={{ fontFamily: s, fontSize: "0.6rem", letterSpacing: "0.14em", color: l, textTransform: "uppercase", marginTop: "0.45rem" }}>{member.role}</div>
+              {member.bio && (
+                <p style={{ fontFamily: a, fontSize: "0.9rem", color: "var(--muted-foreground)", lineHeight: 1.7, marginTop: "0.9rem" }}>{member.bio}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---- 03 What we're looking for (T) ---- */
 function LookingFor() {
   const r = [
@@ -543,7 +581,7 @@ function Why() {
 }
 
 /* ---- 07 Contact (H) — phone added + wired to Supabase ---- */
-function Contact() {
+function Contact({ contact }: { contact: ContactInfo }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -578,8 +616,8 @@ function Contact() {
   }
 
   const contactLinks = [
-    { label: "Email", value: "hello@stackrail.dev", href: "mailto:hello@stackrail.dev" },
-    { label: "Telegram", value: "@stackrail", href: "https://t.me/stackrail" },
+    { label: "Email", value: contact.email, href: `mailto:${contact.email}` },
+    { label: "Telegram", value: contact.telegram, href: tgHref(contact.telegram) },
   ];
 
   return (
@@ -741,18 +779,19 @@ function Footer() {
 }
 
 /* ---- App (A) ---- */
-export function Landing() {
+export function Landing({ team, contact }: { team: TeamMember[]; contact: ContactInfo }) {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "var(--background)", color: "var(--foreground)", fontFamily: a }}>
-      <Header onContact={() => scrollToId("contact")} />
+      <Header onContact={() => scrollToId("contact")} hasTeam={team.length > 0} />
       <Hero onContact={() => scrollToId("contact")} onLearnMore={() => scrollToId("team")} />
       <Context />
       <WhoWeAre />
+      <AboutUs team={team} />
       <LookingFor />
       <WhatWeBring />
       <Collaboration />
       <Why />
-      <Contact />
+      <Contact contact={contact} />
       <Footer />
     </div>
   );

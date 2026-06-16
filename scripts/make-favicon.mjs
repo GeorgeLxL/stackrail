@@ -1,4 +1,4 @@
-// Generates src/app/favicon.ico from the Stackrail brand mark.
+// Generates src/app/favicon.ico from the StrantaDigital brand mark.
 // No external deps — rasterizes the mark, encodes PNGs, packs them into an ICO.
 // Run with: npm run favicon
 import zlib from "node:zlib";

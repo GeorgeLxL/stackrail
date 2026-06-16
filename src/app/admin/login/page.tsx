@@ -11,7 +11,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-sm">
-        <p className="font-mono text-sm tracking-[0.16em] text-ink">STACKRAIL</p>
+        <p className="font-mono text-sm tracking-[0.16em] text-ink">STRANTADIGITAL</p>
         <h1 className="mt-2 text-2xl font-medium">Admin access</h1>
         <p className="mt-1 text-sm text-muted">Sign in to view contact messages.</p>
 

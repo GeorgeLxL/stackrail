@@ -23,7 +23,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Stackrail — A partner, not a vendor.",
+  title: "StrantaDigital — A partner, not a vendor.",
   description:
     "A dedicated engineering group looking for a US-based partner to build with — long-term collaboration, shared responsibility, and transparent communication.",
 };

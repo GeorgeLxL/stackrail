@@ -55,6 +55,15 @@ body {
   background: rgba(201, 168, 76, 0.3);
 }
 
+/* Small uppercase gold label used across admin forms. */
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.62rem;
+  color: rgb(var(--accent));
+}
+
 /* react-phone-number-input — match the ported form's dark/gold inputs */
 .PhoneInput {
   border: 1px solid rgba(201, 168, 76, 0.13);
